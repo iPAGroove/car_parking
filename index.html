@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Просмотр Видео | CPM</title>
+    
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+            font-family: sans-serif;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+        }
+        #videoPlayer {
+            width: 100%;
+            height: auto;
+            max-height: 80vh; /* Ограничиваем высоту для мобильных устройств */
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #4CAF50; /* Зеленый цвет бренда */
+            font-size: 1.5em;
+        }
+        p {
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Видео Просмотр</h1>
+        <p>Загрузка видео...</p>
+        
+        <video id="videoPlayer" controls autoplay muted playsinline>
+            Ваш браузер не поддерживает тег video.
+        </video>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const videoElement = document.getElementById('videoPlayer');
+                const titleElement = document.querySelector('h1');
+                const statusElement = document.querySelector('p');
+
+                // Функция для получения параметра из URL
+                function getUrlParameter(name) {
+                    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+                    const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                    const results = regex.exec(location.search);
+                    // Декодируем, чтобы обработать пробелы и символы
+                    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+                }
+
+                // 1. Получаем URL видео из параметра 'video_url'
+                const videoUrl = getUrlParameter('video_url');
+
+                if (videoUrl) {
+                    // 2. Устанавливаем источник видео
+                    videoElement.src = videoUrl;
+                    videoElement.style.display = 'block';
+                    
+                    titleElement.textContent = 'Видео готово к просмотру';
+                    statusElement.textContent = 'Нажмите Play, чтобы начать.';
+
+                    // 3. Обработка ошибок загрузки
+                    videoElement.onerror = function() {
+                        titleElement.textContent = '❌ Ошибка загрузки';
+                        statusElement.textContent = 'Не удалось загрузить видео. Проверьте ссылку (F12).';
+                    };
+                    
+                } else {
+                    // Если параметр не передан
+                    videoElement.style.display = 'none';
+                    titleElement.textContent = '⚠️ Ошибка: URL не указан';
+                    statusElement.textContent = 'Пожалуйста, откройте ссылку из бота.';
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>
