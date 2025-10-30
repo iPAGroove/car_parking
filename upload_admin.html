@@ -3,29 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Загрузка Видео в Firebase</title>
+    <title>Прямая Загрузка Видео для CPM Bot</title>
     
     <script type="module">
         // Импорт основных функций
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
         // Импорт Storage SDK
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
-        // Ваша конфигурация Firebase
+        // === Firebase Config (CPM Project) ===
         const firebaseConfig = {
             apiKey: "AIzaSyCwl4hXA-UVi6gHSDwIxONFeOBoIMD7H5w",
             authDomain: "cpm-project1.firebaseapp.com",
             projectId: "cpm-project1",
-            // 🛑 ВАЖНО: storageBucket должен быть без 'app' на конце, только домен
-            storageBucket: "cpm-project1.appspot.com", 
+            // 🛑 ФАКТИЧЕСКОЕ ИМЯ БАКЕТА: cpm-project1.firebasestorage.app
+            storageBucket: "cpm-project1.firebasestorage.app", 
             messagingSenderId: "1071894518061",
             appId: "1:1071894518061:web:9eb187d2f6101efe911ba4",
             measurementId: "G-SJWFD8DLGQ"
         };
-
-        // Инициализация
+        
+        // === Init Firebase (Анонимно) ===
         const app = initializeApp(firebaseConfig);
-        const storage = getStorage(app);
+        const storage = getStorage(app); 
         
         // -------------------------------------------------------------
         // --- Логика загрузки файла ---
@@ -51,12 +51,12 @@
                 uploadButton.disabled = true;
                 urlOutput.style.display = 'none';
 
-                // 1. Создаем уникальный путь для файла (папка: 'admin_uploads')
+                // 1. Создаем уникальный путь для файла (папка: 'cpm_uploads')
                 const uniqueId = Date.now();
                 const fileExtension = file.name.split('.').pop();
-                const storageRef = ref(storage, `admin_uploads/${uniqueId}.${fileExtension}`);
+                const storageRef = ref(storage, `cpm_uploads/${uniqueId}.${fileExtension}`);
 
-                // 2. Запускаем загрузку (поддерживает возобновление)
+                // 2. Запускаем загрузку 
                 const uploadTask = uploadBytesResumable(storageRef, file);
 
                 uploadTask.on('state_changed', 
@@ -112,6 +112,7 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
         h1 {
             color: #4CAF50;
@@ -120,11 +121,12 @@
         }
         input[type="file"] {
             display: block;
-            margin-bottom: 20px;
+            margin: 20px auto;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 6px;
             width: 100%;
+            max-width: 350px;
             box-sizing: border-box;
         }
         button {
@@ -150,7 +152,9 @@
             border-radius: 6px;
             background-color: #e9e9f0;
             min-height: 40px;
-            text-align: left;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
         }
         #urlOutput {
             width: 100%;
@@ -161,12 +165,14 @@
             background-color: #e8f5e9;
             font-family: monospace;
             cursor: pointer;
+            text-align: left;
+            resize: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⬆️ Загрузка Видео для Админа</h1>
+        <h1>⬆️ Прямая Загрузка Видео</h1>
         <p>Используйте эту форму для загрузки видеофайлов любого размера ($ > 50 \text{ МБ}$) напрямую в Firebase Storage.</p>
         
         <input type="file" id="fileInput" accept="video/*">
